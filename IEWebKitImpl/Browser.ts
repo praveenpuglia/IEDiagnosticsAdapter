@@ -69,13 +69,12 @@ module Proxy {
                         case "DOM":
                             domHandler.processMessage(methodParts[1], request);
                             break;
-
-                        case "CSS":
-                            //will create a CSS handler later.
-                            //the debugging protocol doesn't list CSS api. Not supported?  
-                            this.postResponse(request.id, {result:methodParts[1]});
+                        case "Worker":
+                            if (methodParts[1] === "canInspectWorkers") {
+                                var processedResult: IWebKitResult = { result: false };
+                                browserHandler.postResponse(request.id, processedResult);
+                            }
                             break;
-
                         default:
                             this.postResponse(request.id, {});
                             break;
