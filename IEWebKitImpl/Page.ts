@@ -6,8 +6,7 @@
 /// <reference path="Interfaces.d.ts"/>
 /// <reference path="Browser.ts"/>
 
-
-/// Proxy to hande the page domain of the Chrome remote debug protocol 
+/// Proxy to handle the page domain of the Chrome remote debug protocol 
 module Proxy {
     export class WebkitCookie implements IWebKitCookie {
         public name: string;
@@ -53,6 +52,10 @@ module Proxy {
             var processedResult: IWebKitResult;
 
             switch (method) {
+                case "enable":
+                    processedResult = { result: { } };
+                    break;
+
                 case "navigate":
                     processedResult = this.navigate(request);
                     break;
@@ -77,6 +80,14 @@ module Proxy {
                     processedResult = { result: false };
                     break;
 
+                case "setShowViewportSizeOnResize":
+                    processedResult = { result: { } };
+                    break;
+
+                case "getAnimationsPlaybackRate":
+                    processedResult = { result: { playbackRate: 1 } };
+                    break;
+
                 default:
                     processedResult = null;
                     break;
@@ -85,8 +96,8 @@ module Proxy {
             browserHandler.postResponse(request.id, processedResult);
         }
 
-        private getCookies(): IWebKitResponse {
-            var processedResult: any = {};
+        private getCookies(): IWebKitResult {
+            var processedResult: IWebKitResult = {};
             var webkitCookies: Array<WebkitCookie> = new Array<WebkitCookie>();
 
             try {
@@ -109,8 +120,8 @@ module Proxy {
             return processedResult;
         }
 
-        private deleteCookie(request: IWebKitRequest): IWebKitResponse {
-            var processedResult: any = {};
+        private deleteCookie(request: IWebKitRequest): IWebKitResult {
+            var processedResult: IWebKitResult = {};
             var cookieName: string = request.params.cookieName;
             var url: string = request.params.url;
 
@@ -125,8 +136,8 @@ module Proxy {
             return processedResult;
         }
 
-        private navigate(request: IWebKitRequest): IWebKitResponse {
-            var processedResult: any = {};
+        private navigate(request: IWebKitRequest): IWebKitResult {
+            var processedResult: IWebKitResult = {};
 
             try {
                 if (request.params.url) {
@@ -147,8 +158,8 @@ module Proxy {
             return processedResult;
         }
 
-        private getResourceTree(request: IWebKitRequest): IWebKitResponse {
-            var processedResult: any = {};
+        private getResourceTree(request: IWebKitRequest): IWebKitResult {
+            var processedResult: IWebKitResult = {};
 
             try {
                 var url = browser.document.parentWindow.location.href;
